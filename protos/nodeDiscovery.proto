@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option go_package = "./protos";
+
+service NodeDiscovery {
+    rpc JoinCluster(JoinClusterRequest) returns (JoinClusterResponse);
+    rpc LeaveCluster(LeaveClusterRequest) returns (LeaveClusterResponse);
+    rpc GetMembers(GetMembersRequest) returns (GetMembersReponse);
+}
+
+message JoinClusterRequest {
+    string ContactNodeIP = 1;
+}
+
+message LeaveClusterRequest {}
+
+message GetMembersRequest {}
+
+message JoinClusterResponse {}
+
+message LeaveClusterResponse {}
+
+message GetMembersReponse {
+    repeated string MembersIP = 1;
+}
