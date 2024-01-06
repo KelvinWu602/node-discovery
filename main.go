@@ -29,7 +29,7 @@ func main() {
 	reflection.Register(gs)
 
 	// create listener (lis), use gs to serve lis
-	lis, err := net.Listen("tcp", "127.0.0.1:3200")
+	lis, err := net.Listen("tcp", ":3200")
 	if err != nil {
 		log.Fatal(err.Error())
 	}
