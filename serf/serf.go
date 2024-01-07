@@ -12,10 +12,35 @@ type ForusSerf struct {
 	agent *serf.Serf
 }
 
+func getDockerHostIP() (string, error) {
+	addrs, err := net.InterfaceAddrs()
+	if err != nil {
+		return "", err
+	}
+	dockerSubnet := net.IPNet{
+		IP:   net.ParseIP("172.17.0.0"),
+		Mask: net.CIDRMask(16, 32),
+	}
+	for _, addr := range addrs {
+		ipNet, ok := addr.(*net.IPNet)
+		if ok && !ipNet.IP.IsLoopback() && ipNet.IP.To4() != nil && dockerSubnet.Contains(ipNet.IP.To4()) {
+			return ipNet.IP.String(), nil
+		}
+	}
+	return "", errors.New("cannot find docker host ip")
+}
+
 func (s *ForusSerf) NewAgent() error {
 	// Create a Serf instance
 	config := serf.DefaultConfig()
-	config.MemberlistConfig.BindAddr = "0.0.0.0"
+	// This module will be run in Docker container with host driver
+	// In order to make memberlist work, need to bind to the Docker host ip, i.e. not in 172.17.0.0/16
+	dockerHostIP, err := getDockerHostIP()
+	if err != nil {
+		log.Printf("Failed to create Serf agent: %v", err)
+		return errors.New("failed to create agent")
+	}
+	config.MemberlistConfig.BindAddr = dockerHostIP
 	// config.MemberlistConfig.AdvertiseAddr = contactNode.String()
 	// config.EventCh = make(chan serf.Event, 256)
 	agent, err := serf.Create(config)
