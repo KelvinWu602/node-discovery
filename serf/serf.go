@@ -23,7 +23,7 @@ func getDockerHostIP() (string, error) {
 	}
 	for _, addr := range addrs {
 		ipNet, ok := addr.(*net.IPNet)
-		if ok && !ipNet.IP.IsLoopback() && ipNet.IP.To4() != nil && dockerSubnet.Contains(ipNet.IP.To4()) {
+		if ok && !ipNet.IP.IsLoopback() && ipNet.IP.To4() != nil && !dockerSubnet.Contains(ipNet.IP.To4()) {
 			return ipNet.IP.String(), nil
 		}
 	}
