@@ -68,7 +68,7 @@ func (s *ForusSerf) LeaveCluster() error {
 	return s.agent.Leave()
 }
 
-func (s *ForusSerf) GetMembers() ([]string, error) {
+func (s *ForusSerf) GetMembers() ([]blueprint.Member, error) {
 	if s.agent == nil {
 		return nil, errors.New("node discovery service aborted")
 	}
@@ -77,7 +77,7 @@ func (s *ForusSerf) GetMembers() ([]string, error) {
 	members := s.agent.Members()
 
 	// Extract the IP addresses of the members
-	ipAddresses := make([]string, len(members))
+	memberInfo := make([]blueprint.Member, len(members))
 	for i, member := range members {
 		_, err := net.ResolveIPAddr("ip", member.Addr.String())
 		if err != nil {
@@ -87,8 +87,9 @@ func (s *ForusSerf) GetMembers() ([]string, error) {
 		// ipAddresses[i] = [4]byte(ipAddress.IP)
 		// copy(ipAddresses[i][:], ipAddress.IP.To4())
 		// ipAddresses[i] = blueprint.IPv4(ipAddress.IP.To4())
-		ipAddresses[i] = member.Addr.String() + " " + member.Status.String()
+
+		memberInfo[i] = blueprint.Member{MemberIP: member.Addr.String(), Status: member.Status.String()}
 	}
 
-	return ipAddresses, nil
+	return memberInfo, nil
 }

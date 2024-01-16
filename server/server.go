@@ -27,11 +27,17 @@ func (s Server) LeaveCluster(ctx context.Context, req *protos.LeaveClusterReques
 }
 
 func (s Server) GetMembers(ctx context.Context, req *protos.GetMembersRequest) (*protos.GetMembersReponse, error) {
-	membersIP, err := s.nodeDiscovery.GetMembers()
+	memberInfo, err := s.nodeDiscovery.GetMembers()
 	if err != nil {
 		return &protos.GetMembersReponse{}, err
 	}
-	return &protos.GetMembersReponse{MembersIP: membersIP}, nil
+
+	// conversion from member in blueprint to member state in proto
+	members := make([]*protos.MemberState, len(memberInfo))
+	for idx, info := range memberInfo {
+		members[idx] = &protos.MemberState{MembersIP: info.MemberIP, Status: info.Status}
+	}
+	return &protos.GetMembersReponse{Member: members}, nil
 }
 
 func (s Server) mustEmbedUnimplementedNodeDiscoveryServer() {

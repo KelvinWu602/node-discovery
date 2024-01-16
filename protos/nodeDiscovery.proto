@@ -21,5 +21,10 @@ message JoinClusterResponse {}
 message LeaveClusterResponse {}
 
 message GetMembersReponse {
-    repeated string MembersIP = 1;
+    repeated MemberState member = 1;
+}
+
+message MemberState {
+    string MembersIP = 1;
+    string Status = 2;
 }
