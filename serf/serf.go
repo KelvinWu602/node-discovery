@@ -42,7 +42,7 @@ func (s *ForusSerf) NewAgent() error {
 	return nil
 }
 
-func (s ForusSerf) JoinCluster(contactNode string) error {
+func (s *ForusSerf) JoinCluster(contactNode string) error {
 	if s.agent == nil {
 		return errors.New("node discovery service aborted")
 	}
@@ -59,17 +59,16 @@ func (s ForusSerf) JoinCluster(contactNode string) error {
 	return nil
 }
 
-func (s ForusSerf) LeaveCluster() error {
+func (s *ForusSerf) LeaveCluster() error {
 	if s.agent == nil {
 		return errors.New("node discovery service aborted")
 	}
 
 	// Leave the Serf cluster
-	s.agent.Leave()
-	return nil
+	return s.agent.Leave()
 }
 
-func (s ForusSerf) GetMembers() ([]string, error) {
+func (s *ForusSerf) GetMembers() ([]string, error) {
 	if s.agent == nil {
 		return nil, errors.New("node discovery service aborted")
 	}
@@ -88,7 +87,7 @@ func (s ForusSerf) GetMembers() ([]string, error) {
 		// ipAddresses[i] = [4]byte(ipAddress.IP)
 		// copy(ipAddresses[i][:], ipAddress.IP.To4())
 		// ipAddresses[i] = blueprint.IPv4(ipAddress.IP.To4())
-		ipAddresses[i] = member.Addr.String()
+		ipAddresses[i] = member.Addr.String() + " " + member.Status.String()
 	}
 
 	return ipAddresses, nil

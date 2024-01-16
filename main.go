@@ -21,7 +21,7 @@ func main() {
 	}
 
 	// create new server with the serf agent
-	server := server.NewServer(blueprint.NodeDiscovery(forusSerf))
+	server := server.NewServer(blueprint.NodeDiscovery(&forusSerf))
 
 	// register server to grpc's server (gs)
 	gs := grpc.NewServer()
@@ -33,5 +33,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
+	log.Printf("Listener's addr: %s \n", lis.Addr().String())
 	gs.Serve(lis)
 }
