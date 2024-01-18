@@ -19,5 +19,5 @@ grpcurl --plaintext 127.0.0.1:3200 NodeDiscovery.GetMembers
 ### Join cluster
 
 ```
-grpcurl --plaintext -d '{"ContactNodeIP": "<Target IP>""}' <Source IP>:3200 NodeDiscovery.GetMembers
+grpcurl --plaintext -d '{"ContactNodeIP": "<Target IP>""}' <Source IP>:3200 NodeDiscovery.JoinCluster
 ```
