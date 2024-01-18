@@ -15,3 +15,9 @@ docker container run -d -p 3200:3200 7373:7373 7946:7946 --name node-discovery n
 ```
 grpcurl --plaintext 127.0.0.1:3200 NodeDiscovery.GetMembers
 ```
+
+### Join cluster
+
+```
+grpcurl --plaintext -d '{"ContactNodeIP": "<Target IP>""}' <Source IP>:3200 NodeDiscovery.GetMembers
+```
