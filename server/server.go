@@ -31,6 +31,17 @@ func (s Server) GetMembers(ctx context.Context, req *protos.GetMembersRequest) (
 	if err != nil {
 		return &protos.GetMembersReponse{}, err
 	}
+	selfIP, err := blueprint.GetDockerHostPublicIP()
+	if err != nil {
+		return &protos.GetMembersReponse{}, err
+	}
+
+	for idx, elem := range members {
+		if elem == selfIP {
+			members = append(members[:idx], members[idx+1:]...)
+			break
+		}
+	}
 
 	// conversion from member in blueprint to member state in proto
 	return &protos.GetMembersReponse{Member: members}, nil
