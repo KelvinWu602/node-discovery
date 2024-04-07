@@ -65,7 +65,16 @@ func (s *ForusSerf) LeaveCluster() error {
 	}
 
 	// Leave the Serf cluster
-	return s.agent.Leave()
+	if err := s.agent.Leave(); err != nil {
+		log.Println("Failed to leave cluster", err)
+		return err
+	}
+	// Restore Serf agent
+	if err := s.NewAgent(); err != nil {
+		log.Println("Failed to restore serf agent, cannot JoinCluster again. Please stop this service.", err)
+		return err
+	}
+	return nil
 }
 
 func (s *ForusSerf) GetMembers() ([]string, error) {
