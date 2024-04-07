@@ -70,6 +70,10 @@ func (s *ForusSerf) LeaveCluster() error {
 		return err
 	}
 	// Restore Serf agent
+	if err := s.agent.Shutdown(); err != nil {
+		log.Println("Failed to shutdown serf agent", err)
+		return err
+	}
 	if err := s.NewAgent(); err != nil {
 		log.Println("Failed to restore serf agent, cannot JoinCluster again. Please stop this service.", err)
 		return err
